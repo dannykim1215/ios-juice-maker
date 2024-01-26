@@ -36,10 +36,169 @@
 | **EOF 처리** |
 
 ### 5. 트러블 슈팅
-#### 문제 상황
 
-#### 해결 방안 
+## **JuiceMaker - JuiceMaker.swift**
 
+### 1: FruitStore 초기화 변경
+
+#### 이전 코드:
+
+```swift
+private var fruitStore: FruitStore = FruitStore()
+```
+
+#### 변경된 코드:
+
+```swift
+private var fruitStore: FruitStore = FruitStore(initialStock: [.strawberry: 10, .banana: 10, .pineapple: 10, .kiwi: 10, .mango: 10])
+```
+
+**문제상황:** 이전 코드에서는 `fruitStore`를 기본 생성자로 초기화했지만, 변경된 코드에서는 초기 재고를 포함한 생성자를 사용하고 있습니다.
+
+**해결방안:** 변경된 코드에 따라 `fruitStore`를 초기화할 때 초기 재고를 설정하도록 수정했습니다.
+
+```swift
+private var fruitStore: FruitStore = FruitStore(initialStock: [.strawberry: 10, .banana: 10, .pineapple: 10, .kiwi: 10, .mango: 10])
+```
+<br>
+
+### 2: makeJuice 메서드 변경
+
+#### 이전 코드:
+
+```swift
+func makeJuice(juiceName: String, amount: Int) -> String
+```
+
+#### 변경된 코드:
+
+```swift
+func makeJuice(juiceMenu: JuiceMenu, amount: Int) -> Result<String, FruitResultError>
+```
+
+**문제상황:** `makeJuice` 메서드의 시그니처가 변경되었습니다. 이전 코드에서는 문자열을 받아 문자열을 반환했지만, 변경된 코드에서는 `juiceMenu` 열거형을 사용하고 `Result`를 반환합니다.
+
+**해결방안:** 변경된 코드에 따라 메서드 호출 시 `juiceMenu` 열거형 값을 사용하고, `Result` 타입을 처리했습니다.
+
+```swift
+let result = makeJuice(juiceMenu: .딸기쥬스, amount: 2)
+switch result {
+case .success(let message):
+    print(message) // 성공한 경우 메시지 출력
+case .failure(let error):
+    print(error) // 실패한 경우 에러 처리
+}
+```
+
+<br>
+
+### 3: deductFruit 메서드 변경
+
+#### 이전 코드:
+
+```swift
+func deductFruit(reqJuiceName: String, reqFruits: [String: Int], reqJuiceAmount: Int) -> [String: Any]
+```
+
+#### 변경된 코드:
+
+```swift
+func deductFruit(requestJuiceName: String, requestFruits: [Fruit: Int], requestJuiceAmount: Int) -> String
+```
+
+**문제상황:** `deductFruit` 메서드의 시그니처가 변경되었습니다. 이전 코드에서는 `[String: Int]` 딕셔너리를 받아 `[String: Any]` 딕셔너리를 반환했지만, 변경된 코드에서는 `[Fruit: Int]` 딕셔너리를 받아 문자열을 반환합니다.
+
+**해결방안:** 변경된 코드에 따라 메서드 호출 시 인자를 전달하고, 반환된 문자열을 처리했습니다.
+
+```swift
+let message = deductFruit(requestJuiceName: "딸기쥬스", requestFruits: [.strawberry: 2], requestJuiceAmount: 1)
+print(message) // "딸기쥬스를 1잔 만들었습니다."
+```
+
+<br>
+
+### 4: 그 외
+#### FruitStore 초기화 방식 변경, changeFruitQuantity 메서드 수정, showFruitQuantity 메서드 변경
+
+#### 이전 코드:
+
+```swift
+class FruitStore {
+    var fruitStorage = ["딸기": 10, "바나나": 10, "파인애플": 10, "키위": 10, "망고": 10]
+    
+    func changeFruitQuantity(changeFruit: String, changeQuantity: Int) {
+        fruitStorage.updateValue(changeQuantity, forKey: changeFruit)
+    }
+
+    func showFruitQuantity(showFruits: [String: Int], showAmount: Int) -> Int {
+        // 코드 내용 생략
+    }
+}
+```
+
+#### 변경된 코드:
+
+```swift
+class FruitStore {
+    var fruitStorage: [Fruit: Int]
+
+    init(initialStock: [Fruit: Int]) {
+        fruitStorage = initialStock
+    }
+    
+    func changeFruitQuantity(fruitName: Fruit, quantity: Int) {
+        fruitStorage[fruitName] = quantity
+    }
+
+    func showFruitQuantity(fruitsStock: [Fruit: Int], amount: Int) -> Bool {
+        // 코드 내용 생략
+    }
+}
+```
+
+<br>
+
+## **JuiceMaker - FruitStore.swift**
+
+### 1: FruitStore 초기화 변경
+
+**문제상황:** 이전 코드에서는 `fruitStorage`를 문자열을 키로 하는 딕셔너리로 초기화했지만, 변경된 코드에서는 `fruitStorage`를 `[Fruit: Int]` 타입으로 초기화합니다.
+
+**해결방안:** 변경된 코드에 따라 `fruitStorage`를 초기화하는 방식을 `[Fruit: Int]` 타입의 딕셔너리로 수정하였습니다.
+
+```swift
+var fruitStorage: [Fruit: Int]
+
+init(initialStock: [Fruit: Int]) {
+    fruitStorage = initialStock
+}
+```
+
+### 2: changeFruitQuantity 메서드 변경
+
+**문제상황:** 이전 코드에서는 `changeFruitQuantity` 메서드가 문자열과 정수를 받아 업데이트했지만, 변경된 코드에서는 `Fruit` 열거형과 정수를 받아 업데이트합니다.
+
+**해결방안:** 변경된 코드에 따라 메서드 호출 시 `Fruit` 열거형을 사용하고, 해당 과일의 재고를 업데이트하도록 수정하였습니다.
+
+```swift
+func changeFruitQuantity(fruitName: Fruit, quantity: Int) {
+    fruitStorage[fruitName] = quantity
+}
+```
+
+### 3: showFruitQuantity 메서드 변경
+
+**문제상황:** 이전 코드에서는 `showFruitQuantity` 메서드가 문자열을 키로 하는 딕셔너리와 정수를 받아 재고 확인했지만, 변경된 코드에서는 `[Fruit: Int]` 타입의 딕셔너리와 정수를 받아 재고를 확인합니다.
+
+**해결방안:** 변경된 코드에 따라 메서드 호출 시 `[Fruit: Int]` 타입의 딕셔너리를 사용하고, 모든 과일의 재고를 확인하여 충분한 재고가 있는지를 반환하도록 수정하였습니다.
+
+```swift
+func showFruitQuantity(fruitsStock: [Fruit: Int], amount: Int) -> Bool {
+    // 코드 내용 생략
+}
+```
+
+<br>
 
 ### 6. 팀 회고
 #### 우리팀이 잘한 점 😍
@@ -56,3 +215,5 @@
 - 
 
 ### 7. 참고 자료
+
+e5af0327ba48970ca6d4a16debc052aa8b8d4f69
