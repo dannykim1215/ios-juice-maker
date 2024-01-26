@@ -14,7 +14,7 @@
 과일의 재고가 없다면, 재고가 부족하다는 것을 알려주고 과일 재고를 수정할 수 있는 기능을 제공합니다.
 
 ### 2. 팀원
-| [HAMZZI](https://github.com/kkomgi)) | [Danny](https://github.com/dannykim1215) |
+| [HAMZZI](https://github.com/kkomgi) | [Danny](https://github.com/dannykim1215) |
 | --- | --- |
 | <img src="https://avatars.githubusercontent.com/u/65929788?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/154333967?v=4" width="200"> |
 
