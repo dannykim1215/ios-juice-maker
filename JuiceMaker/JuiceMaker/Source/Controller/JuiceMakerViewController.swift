@@ -29,7 +29,33 @@ class JuiceMakerViewController: UIViewController {
     }
     
     @IBAction func orderStrawbananaJuiceButtonClicked(_ sender: Any) {
-        showJuiceHandleResult(juiceMenu: .strawberryBanana)
+        let result: String = showJuiceHandleResult(juiceMenu: .strawberryBanana)
+        
+        if result == "\(JuiceMenu.strawberryBanana.rawValue)를 1잔 만들었습니다." {
+            orderJuiceSucceedAlert(juiceName: JuiceMenu.strawberryBanana.rawValue)
+        } else {
+            orderJuiceFailedAlert()
+        }
+    }
+    
+    func orderJuiceSucceedAlert(juiceName: String) {
+        let alert = UIAlertController(title: "JuiceMaker", message: "\(juiceName)를 1잔 만들었습니다.", preferredStyle: UIAlertController.Style.actionSheet)
+        let okAction = UIAlertAction(title: "예", style: .default, handler: nil)
+        
+        alert.addAction(okAction)
+        
+        present(alert, animated: false, completion: nil)
+    }
+    
+    func orderJuiceFailedAlert() {
+        let alert = UIAlertController(title: "JuiceMaker", message: "재료가 모자라요, 재고를 수정할까요?", preferredStyle: UIAlertController.Style.actionSheet)
+        let okAction = UIAlertAction(title: "예", style: .default, handler: nil)
+        let cancelAction = UIAlertAction(title: "아니오", style: .default, handler: nil)
+
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: false, completion: nil)
     }
     
     
@@ -41,13 +67,14 @@ class JuiceMakerViewController: UIViewController {
     }
     
     
-    func showJuiceHandleResult(juiceMenu: JuiceMenu) {
+    func showJuiceHandleResult(juiceMenu: JuiceMenu) -> String {
         let juiceResult = juiceMaker.makeJuice(juiceMenu: juiceMenu, amount: 1)
         switch juiceResult {
         case .success(let message):
             print(message)
+            return message
         case .failure(.outOfStock):
-            print("재고가 없습니다")
+            return "재고가 없습니다"
         }
     }
 }
