@@ -21,11 +21,7 @@ class JuiceMakerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        strawberryLabel.text = juiceMaker.viewFruitStock(fruitName: .strawberry)
-        bananaLabel.text = juiceMaker.viewFruitStock(fruitName: .banana)
-        pineappleLabel.text = juiceMaker.viewFruitStock(fruitName: .pineapple)
-        kiwiLabel.text = juiceMaker.viewFruitStock(fruitName: .kiwi)
-        mangoLabel.text = juiceMaker.viewFruitStock(fruitName: .mango)
+        showFruitStockLabel()
     }
     
     @IBAction func orderStrawbananaJuiceButtonClicked(_ sender: Any) {
@@ -36,6 +32,15 @@ class JuiceMakerViewController: UIViewController {
         } else {
             orderJuiceFailedAlert()
         }
+        showFruitStockLabel()
+    }
+    
+    func showFruitStockLabel() {
+        strawberryLabel.text = juiceMaker.viewFruitStock(fruitName: .strawberry)
+        bananaLabel.text = juiceMaker.viewFruitStock(fruitName: .banana)
+        pineappleLabel.text = juiceMaker.viewFruitStock(fruitName: .pineapple)
+        kiwiLabel.text = juiceMaker.viewFruitStock(fruitName: .kiwi)
+        mangoLabel.text = juiceMaker.viewFruitStock(fruitName: .mango)
     }
     
     func orderJuiceSucceedAlert(juiceName: String) {
@@ -58,14 +63,12 @@ class JuiceMakerViewController: UIViewController {
         present(alert, animated: false, completion: nil)
     }
     
-    
     @IBAction func modifiedFruitStockButtonClicked(_ sender: UIBarButtonItem) {
         guard let FruitStockViewController = self.storyboard?.instantiateViewController(withIdentifier: "FruitStockViewController") else {
             return
         }
         self.navigationController?.pushViewController(FruitStockViewController, animated: true)
     }
-    
     
     func showJuiceHandleResult(juiceMenu: JuiceMenu) -> String {
         let juiceResult = juiceMaker.makeJuice(juiceMenu: juiceMenu, amount: 1)
